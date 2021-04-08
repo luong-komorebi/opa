@@ -318,13 +318,13 @@ func getPluginSet(factories map[string]plugins.Factory, manager *plugins.Manager
 	pluginNames := []string{}
 	pluginFactories := []pluginfactory{}
 
-	for k := range config.Plugins {
+	for k := range config.CustomPlugins {
 		f, ok := factories[k]
 		if !ok {
 			return nil, fmt.Errorf("plugin %q not registered", k)
 		}
 
-		c, err := f.Validate(manager, config.Plugins[k])
+		c, err := f.Validate(manager, config.CustomPlugins[k])
 		if err != nil {
 			return nil, err
 		}
