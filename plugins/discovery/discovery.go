@@ -83,8 +83,17 @@ func New(manager *plugins.Manager, opts ...func(*Discovery)) (*Discovery, error)
 		return result, nil
 	}
 
-	if manager.Config.PluginsEnabled() {
-		return nil, fmt.Errorf("plugins cannot be specified in the bootstrap configuration when discovery enabled")
+	switch true {
+	case manager.Config.BundleEnabled():
+		return nil, fmt.Errorf("bundles cannot be specified in the bootstrap configuration when discovery enabled")
+	case manager.Config.StatusEnabled():
+		return nil, fmt.Errorf("status cannot be specified in the bootstrap configuration when discovery enabled")
+	case manager.Config.DecisionLogsEnabled():
+		return nil, fmt.Errorf("decision logs cannot be specified in the bootstrap configuration when discovery enabled")
+	case manager.Config.CustomPluginsEnabled():
+		return nil, fmt.Errorf("custom plugins cannot be specified in the bootstrap configuration when discovery enabled")
+	default:
+		fmt.Printf("No plugins are found. Discovery configuration is valid")
 	}
 
 	result.config = config
