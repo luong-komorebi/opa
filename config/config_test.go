@@ -105,7 +105,7 @@ func TestConfigStatusEnabled(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			actual := test.conf.DecisionLogsEnabled()
+			actual := test.conf.StatusEnabled()
 			if actual != test.expected {
 				t.Errorf("Expected %t but got %t", test.expected, actual)
 			}
