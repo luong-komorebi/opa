@@ -26,7 +26,7 @@ type Config struct {
 	Bundles                      json.RawMessage            `json:"bundles,omitempty"`
 	DecisionLogs                 json.RawMessage            `json:"decision_logs,omitempty"`
 	Status                       json.RawMessage            `json:"status,omitempty"`
-	Plugins                      map[string]json.RawMessage `json:"plugins,omitempty"`
+	CustomPlugins                map[string]json.RawMessage `json:"plugins,omitempty"`
 	Keys                         json.RawMessage            `json:"keys,omitempty"`
 	DefaultDecision              *string                    `json:"default_decision,omitempty"`
 	DefaultAuthorizationDecision *string                    `json:"default_authorization_decision,omitempty"`
@@ -44,9 +44,24 @@ func ParseConfig(raw []byte, id string) (*Config, error) {
 	return &result, result.validateAndInjectDefaults(id)
 }
 
-// PluginsEnabled returns true if one or more plugin features are enabled.
-func (c Config) PluginsEnabled() bool {
-	return c.Bundle != nil || c.Bundles != nil || c.DecisionLogs != nil || c.Status != nil || len(c.Plugins) > 0
+// BundleEnabled returns true if bundle is enabled
+func (c Config) BundleEnabled() bool {
+	return c.Bundle != nil || c.Bundles != nil
+}
+
+// BundleEnabled returns true if bundle is enabled
+func (c Config) DecisionLogsEnabled() bool {
+	return c.DecisionLogs != nil
+}
+
+// BundleEnabled returns true if bundle is enabled
+func (c Config) StatusEnabled() bool {
+	return c.Status != nil
+}
+
+// BundleEnabled returns true if bundle is enabled
+func (c Config) CustomPluginsEnabled() bool {
+	return len(c.CustomPlugins) > 0
 }
 
 // DefaultDecisionRef returns the default decision as a reference.
