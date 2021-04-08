@@ -49,17 +49,17 @@ func (c Config) BundleEnabled() bool {
 	return c.Bundle != nil || c.Bundles != nil
 }
 
-// BundleEnabled returns true if bundle is enabled
+// DecisionLogsEnabled returns true if decisionlogs is enabled
 func (c Config) DecisionLogsEnabled() bool {
 	return c.DecisionLogs != nil
 }
 
-// BundleEnabled returns true if bundle is enabled
+// StatusEnabled returns true if status is enabled
 func (c Config) StatusEnabled() bool {
 	return c.Status != nil
 }
 
-// BundleEnabled returns true if bundle is enabled
+// CustomPluginsEnabled returns true if bundle is enabled
 func (c Config) CustomPluginsEnabled() bool {
 	return len(c.CustomPlugins) > 0
 }
