@@ -16,7 +16,7 @@ import (
 	"github.com/open-policy-agent/opa/version"
 )
 
-func TestConfigPluginsEnabled(t *testing.T) {
+func TestConfigBundleEnabled(t *testing.T) {
 	tests := []struct {
 		name     string
 		conf     Config
@@ -41,12 +41,58 @@ func TestConfigPluginsEnabled(t *testing.T) {
 			},
 			expected: true,
 		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			actual := test.conf.BundleEnabled()
+			if actual != test.expected {
+				t.Errorf("Expected %t but got %t", test.expected, actual)
+			}
+		})
+	}
+}
+
+func TestConfigDecisionLogsEnabled(t *testing.T) {
+	tests := []struct {
+		name     string
+		conf     Config
+		expected bool
+	}{
+		{
+			name:     "empty config",
+			conf:     Config{},
+			expected: false,
+		},
 		{
 			name: "decision_logs",
 			conf: Config{
 				DecisionLogs: []byte(`{decision_logs: {}}`),
 			},
 			expected: true,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			actual := test.conf.DecisionLogsEnabled()
+			if actual != test.expected {
+				t.Errorf("Expected %t but got %t", test.expected, actual)
+			}
+		})
+	}
+}
+
+func TestConfigStatusEnabled(t *testing.T) {
+	tests := []struct {
+		name     string
+		conf     Config
+		expected bool
+	}{
+		{
+			name:     "empty config",
+			conf:     Config{},
+			expected: false,
 		},
 		{
 			name: "status",
@@ -55,10 +101,33 @@ func TestConfigPluginsEnabled(t *testing.T) {
 			},
 			expected: true,
 		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			actual := test.conf.StatusEnabled()
+			if actual != test.expected {
+				t.Errorf("Expected %t but got %t", test.expected, actual)
+			}
+		})
+	}
+}
+
+func TestConfigCustomPluginsEnabled(t *testing.T) {
+	tests := []struct {
+		name     string
+		conf     Config
+		expected bool
+	}{
+		{
+			name:     "empty config",
+			conf:     Config{},
+			expected: false,
+		},
 		{
 			name: "plugins",
 			conf: Config{
-				Plugins: map[string]json.RawMessage{
+				CustomPlugins: map[string]json.RawMessage{
 					"some-plugin": {},
 				},
 			},
@@ -68,7 +137,7 @@ func TestConfigPluginsEnabled(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			actual := test.conf.PluginsEnabled()
+			actual := test.conf.CustomPluginsEnabled()
 			if actual != test.expected {
 				t.Errorf("Expected %t but got %t", test.expected, actual)
 			}

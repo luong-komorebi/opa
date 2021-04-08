@@ -83,8 +83,15 @@ func New(manager *plugins.Manager, opts ...func(*Discovery)) (*Discovery, error)
 		return result, nil
 	}
 
-	if manager.Config.PluginsEnabled() {
-		return nil, fmt.Errorf("plugins cannot be specified in the bootstrap configuration when discovery enabled")
+	switch {
+	case manager.Config.BundleEnabled():
+		return nil, fmt.Errorf("bundles cannot be specified in the bootstrap configuration when discovery enabled")
+	case manager.Config.StatusEnabled():
+		return nil, fmt.Errorf("status cannot be specified in the bootstrap configuration when discovery enabled")
+	case manager.Config.DecisionLogsEnabled():
+		return nil, fmt.Errorf("decision logs cannot be specified in the bootstrap configuration when discovery enabled")
+	case manager.Config.CustomPluginsEnabled():
+		return nil, fmt.Errorf("custom plugins cannot be specified in the bootstrap configuration when discovery enabled")
 	}
 
 	result.config = config
@@ -309,13 +316,13 @@ func getPluginSet(factories map[string]plugins.Factory, manager *plugins.Manager
 	pluginNames := []string{}
 	pluginFactories := []pluginfactory{}
 
-	for k := range config.Plugins {
+	for k := range config.CustomPlugins {
 		f, ok := factories[k]
 		if !ok {
 			return nil, fmt.Errorf("plugin %q not registered", k)
 		}
 
-		c, err := f.Validate(manager, config.Plugins[k])
+		c, err := f.Validate(manager, config.CustomPlugins[k])
 		if err != nil {
 			return nil, err
 		}
